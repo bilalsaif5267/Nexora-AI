@@ -2,7 +2,7 @@ name: Build Nexora APK
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   workflow_dispatch:
 
 jobs:
@@ -16,18 +16,21 @@ jobs:
         uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: '21'
+          java-version: "21"
 
       - name: Grant execute permission
         run: chmod +x gradlew
 
       - name: Build APK
-        run: ./gradlew assembleDebug
+        run: |
+          ./gradlew clean
+          ./gradlew assembleDebug --stacktrace
+
       - name: Check APK
         run: |
           echo "APK files:"
           find app/build/outputs/apk -type f -exec ls -lh {} \;
-          
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
