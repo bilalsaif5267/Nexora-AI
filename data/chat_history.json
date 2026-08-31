@@ -1,0 +1,10 @@
+[
+  {
+    "user": "hello",
+    "nexora": "You said: hello"
+  },
+  {
+    "user": "nexora",
+    "nexora": "You said: nexora"
+  }
+]

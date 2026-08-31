@@ -1,0 +1,25 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.nexora.ai'
+    compileSdk 36
+
+    defaultConfig {
+        applicationId "com.nexora.ai"
+        minSdk 24
+        targetSdk 36
+        versionCode 1
+        versionName "1.0 Alpha"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+}
+
+dependencies {
+}
