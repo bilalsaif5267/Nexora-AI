@@ -23,7 +23,11 @@ jobs:
 
       - name: Build APK
         run: ./gradlew assembleDebug
-
+      - name: Check APK
+        run: |
+          echo "APK files:"
+          find app/build/outputs/apk -type f -exec ls -lh {} \;
+          
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
