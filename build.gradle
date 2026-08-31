@@ -1,3 +1,10 @@
 plugins {
     id 'com.android.application' version '8.8.0' apply false
 }
+
+configurations.all {
+    exclude group: "org.jetbrains.kotlin", module: "kotlin-stdlib-jdk7"
+    exclude group: "org.jetbrains.kotlin", module: "kotlin-stdlib-jdk8"
+}plugins {
+    id 'com.android.application' version '8.8.0' apply false
+}
