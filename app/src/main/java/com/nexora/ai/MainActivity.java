@@ -36,7 +36,7 @@ public class MainActivity extends Activity {
 
         setContentView(root);
 
-        addBotMessage("👋 Welcome to Nexora AI!\nAsk anything or tap an AI Studio tool.");
+        addBotMessage("👋 Welcome to Nexora AI!\nYour premium AI studio is ready.");
     }
 
     void createTopBar() {
@@ -45,10 +45,25 @@ public class MainActivity extends Activity {
         top.setGravity(Gravity.CENTER_VERTICAL);
         top.setPadding(20,20,20,20);
 
+        TextView menu = text("☰",24,white);
+
         TextView logo = text("💜 NEXORA",22,white);
         logo.setTypeface(Typeface.DEFAULT_BOLD);
 
-        top.addView(logo);
+        LinearLayout.LayoutParams lp =
+                new LinearLayout.LayoutParams(0,-2,1);
+
+        TextView newChat = text("+",24,white);
+
+        newChat.setOnClickListener(v -> {
+            chatContainer.removeAllViews();
+            addBotMessage("✨ New chat started.");
+        });
+
+        top.addView(menu);
+        top.addView(logo, lp);
+        top.addView(newChat);
+
         root.addView(top);
     }
 
@@ -98,22 +113,17 @@ public class MainActivity extends Activity {
     }
 
     String getToolReply(String name){
+        if(name.equals("Image"))
+            return "🖼️ Image Generator\n\nNano Banana Pro, Flux & SDXL coming soon.";
 
-        if(name.equals("Image")){
-            return "🖼️ Image Generator\n\nFuture models: Nano Banana Pro, Flux, SDXL.";
-        }
+        if(name.equals("Video"))
+            return "🎬 Video Generator\n\nSora, Veo, Kling & Runway support coming soon.";
 
-        if(name.equals("Video")){
-            return "🎬 Video Generator\n\nFuture models: Sora, Veo 3, Kling, Runway.";
-        }
+        if(name.equals("Thumbnail"))
+            return "🎨 Thumbnail Maker\n\nPaste your YouTube title and Nexora will help.";
 
-        if(name.equals("Thumbnail")){
-            return "🎨 Thumbnail Maker\n\nPaste your YouTube title and Nexora will generate a thumbnail prompt.";
-        }
-
-        if(name.equals("Voice")){
-            return "🎤 Voice Generator\n\nPaste your script for AI voice generation.";
-        }
+        if(name.equals("Voice"))
+            return "🎤 Voice Generator\n\nVoice script tool coming soon.";
 
         return "💜 Nexora AI Studio";
     }
@@ -150,12 +160,12 @@ public class MainActivity extends Activity {
                 new LinearLayout.LayoutParams(0,-2,1);
 
         TextView send = text("➤",24,white);
-        send.setPadding(20,16,20,16);
 
         GradientDrawable sendBg = new GradientDrawable();
         sendBg.setShape(GradientDrawable.OVAL);
         sendBg.setColor(purple);
         send.setBackground(sendBg);
+        send.setPadding(20,16,20,16);
 
         send.setOnClickListener(v -> {
             String msg = input.getText().toString().trim();
@@ -164,7 +174,8 @@ public class MainActivity extends Activity {
             addUserMessage(msg);
             input.setText("");
 
-            addBotMessage("💜 Nexora\n\n" + msg);
+            addBotMessage("⏳ Nexora is thinking...");
+            addBotMessage(getAIReply(msg));
 
             scrollView.post(() -> scrollView.fullScroll(View.FOCUS_DOWN));
         });
@@ -173,6 +184,21 @@ public class MainActivity extends Activity {
         inputBar.addView(send);
 
         root.addView(inputBar);
+    }
+
+    String getAIReply(String msg){
+        String m = msg.toLowerCase();
+
+        if(m.contains("hello") || m.contains("hi"))
+            return "👋 Hello Bilal! Welcome to Nexora AI.";
+
+        if(m.contains("thumbnail"))
+            return "🎨 I'll help you create a premium YouTube thumbnail prompt.";
+
+        if(m.contains("video"))
+            return "🎬 Tell me your video idea and I'll generate a cinematic prompt.";
+
+        return "💜 Nexora received: " + msg;
     }
 
     void addUserMessage(String msg){
@@ -203,8 +229,8 @@ public class MainActivity extends Activity {
         GradientDrawable bg = new GradientDrawable();
         bg.setCornerRadius(28);
         bg.setColor(bgColor);
-
         tv.setBackground(bg);
+
         return tv;
     }
 
