@@ -14,208 +14,129 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
-    int purple = Color.rgb(123, 45, 255);
-    int dark = Color.rgb(11, 6, 24);
-    int panel = Color.rgb(28, 19, 45);
+    int purple = Color.rgb(123,45,255);
+    int dark = Color.rgb(11,6,24);
+    int panel = Color.rgb(28,19,45);
     int white = Color.WHITE;
-    int soft = Color.rgb(195, 185, 210);
+    int soft = Color.rgb(195,185,210);
 
     LinearLayout chatContainer;
     EditText input;
+    ScrollView scrollView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getWindow().setStatusBarColor(dark);
-        getWindow().setNavigationBarColor(dark);
-
-        // ROOT
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
         root.setBackgroundColor(dark);
 
-        // ================= TOP BAR =================
-
+        // Top bar
         LinearLayout top = new LinearLayout(this);
         top.setGravity(Gravity.CENTER_VERTICAL);
-        top.setPadding(20, 15, 20, 10);
+        top.setPadding(20,20,20,20);
 
-        TextView menu = text("☰", 26, white);
-        top.addView(menu, new LinearLayout.LayoutParams(55, 60));
+        TextView logo = new TextView(this);
+        logo.setText("💜 NEXORA");
+        logo.setTextColor(white);
+        logo.setTextSize(22);
+        logo.setTypeface(Typeface.DEFAULT_BOLD);
 
-        TextView logo = text("NEXORA", 20, white);
-        logo.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-
-        LinearLayout.LayoutParams logoParams =
-                new LinearLayout.LayoutParams(0, 60, 1);
-
-        top.addView(logo, logoParams);
-
-        TextView newChat = text("＋", 30, white);
-        newChat.setGravity(Gravity.CENTER);
-
-        top.addView(newChat, new LinearLayout.LayoutParams(55, 60));
-
+        top.addView(logo);
         root.addView(top);
 
-        // ================= CHAT AREA =================
-
-        ScrollView scroll = new ScrollView(this);
-
+        // Chat area
+        scrollView = new ScrollView(this);
         chatContainer = new LinearLayout(this);
         chatContainer.setOrientation(LinearLayout.VERTICAL);
-        chatContainer.setPadding(18, 20, 18, 20);
+        chatContainer.setPadding(16,16,16,16);
+        scrollView.addView(chatContainer);
 
-        scroll.addView(chatContainer);
+        root.addView(scrollView,
+                new LinearLayout.LayoutParams(-1,0,1));
 
-        root.addView(
-                scroll,
-                new LinearLayout.LayoutParams(1, 0, 1)
-        );
+        addBotMessage("👋 Hello! I'm Nexora AI.\nAsk me anything.");
 
-        // Welcome message
-        addBotMessage(
-                "Hello! 👋\n\nI'm Nexora AI.\n\nAsk me anything or tell me what you'd like to create."
-        );
-
-        // ================= INPUT =================
-
+        // Input row
         LinearLayout inputRow = new LinearLayout(this);
-        inputRow.setGravity(Gravity.CENTER_VERTICAL);
-        inputRow.setPadding(15, 8, 15, 15);
-
-        GradientDrawable inputBg = new GradientDrawable();
-        inputBg.setColor(panel);
-        inputBg.setCornerRadius(45);
-
-        inputRow.setBackground(inputBg);
-
-        TextView attach = text("＋", 27, white);
-        attach.setGravity(Gravity.CENTER);
-
-        inputRow.addView(
-                attach,
-                new LinearLayout.LayoutParams(55, 60)
-        );
+        inputRow.setOrientation(LinearLayout.HORIZONTAL);
+        inputRow.setPadding(16,16,16,16);
+        inputRow.setBackgroundColor(panel);
 
         input = new EditText(this);
         input.setHint("Message Nexora...");
-        input.setHintTextColor(Color.rgb(140, 130, 155));
+        input.setHintTextColor(Color.GRAY);
         input.setTextColor(white);
-        input.setTextSize(16);
-        input.setSingleLine(false);
         input.setBackgroundColor(Color.TRANSPARENT);
 
-        inputRow.addView(
-                input,
-                new LinearLayout.LayoutParams(0, 65, 1)
-        );
+        inputRow.addView(input,
+                new LinearLayout.LayoutParams(0,-2,1));
 
-        TextView send = text("➤", 22, white);
-        send.setGravity(Gravity.CENTER);
+        TextView send = new TextView(this);
+        send.setText("➤");
+        send.setTextColor(white);
+        send.setTextSize(24);
+        send.setPadding(20,10,20,10);
 
-        GradientDrawable sendBg = new GradientDrawable();
-        sendBg.setShape(GradientDrawable.OVAL);
-        sendBg.setColor(purple);
+        GradientDrawable bg = new GradientDrawable();
+        bg.setColor(purple);
+        bg.setCornerRadius(100);
+        send.setBackground(bg);
 
-        send.setBackground(sendBg);
-
-        inputRow.addView(
-                send,
-                new LinearLayout.LayoutParams(58, 58)
-        );
+        inputRow.addView(send);
 
         root.addView(inputRow);
 
-        // ================= SEND =================
-
         send.setOnClickListener(v -> {
+            String msg = input.getText().toString().trim();
+            if(msg.isEmpty()) return;
 
-            String message = input.getText().toString().trim();
-
-            if (message.isEmpty()) {
-                return;
-            }
-
-            addUserMessage(message);
-
+            addUserMessage(msg);
             input.setText("");
 
-            // Temporary local response.
-            // Real AI API will be connected later.
-            addBotMessage(
-                    "I received your message:\n\n\"" +
-                    message +
-                    "\"\n\n✨ AI connection will be added in the next stage."
-            );
+            addBotMessage("✨ I received: " + msg);
+
+            scrollView.post(() -> scrollView.fullScroll(View.FOCUS_DOWN));
         });
 
         setContentView(root);
     }
 
-    // ================= TEXT HELPER =================
+    void addUserMessage(String msg){
+        TextView tv = bubble(msg, purple, white);
 
-    TextView text(String value, float size, int color) {
+        LinearLayout.LayoutParams lp =
+                new LinearLayout.LayoutParams(-2,-2);
+        lp.gravity = Gravity.END;
+        lp.setMargins(80,10,0,10);
 
-        TextView t = new TextView(this);
-
-        t.setText(value);
-        t.setTextSize(size);
-        t.setTextColor(color);
-
-        return t;
+        chatContainer.addView(tv, lp);
     }
 
-    // ================= USER MESSAGE =================
+    void addBotMessage(String msg){
+        TextView tv = bubble(msg, panel, soft);
 
-    void addUserMessage(String message) {
+        LinearLayout.LayoutParams lp =
+                new LinearLayout.LayoutParams(-2,-2);
+        lp.gravity = Gravity.START;
+        lp.setMargins(0,10,80,10);
 
-        TextView bubble = text(message, 16, white);
-
-        bubble.setPadding(22, 15, 22, 15);
-
-        GradientDrawable bg = new GradientDrawable();
-        bg.setColor(purple);
-        bg.setCornerRadius(28);
-
-        bubble.setBackground(bg);
-
-        LinearLayout.LayoutParams params =
-                new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                );
-
-        params.gravity = Gravity.RIGHT;
-        params.setMargins(45, 8, 0, 8);
-
-        chatContainer.addView(bubble, params);
+        chatContainer.addView(tv, lp);
     }
 
-    // ================= BOT MESSAGE =================
-
-    void addBotMessage(String message) {
-
-        TextView bubble = text(message, 16, soft);
-
-        bubble.setPadding(22, 15, 22, 15);
+    TextView bubble(String text,int bgColor,int txtColor){
+        TextView tv = new TextView(this);
+        tv.setText(text);
+        tv.setTextColor(txtColor);
+        tv.setTextSize(16);
+        tv.setPadding(24,16,24,16);
 
         GradientDrawable bg = new GradientDrawable();
-        bg.setColor(panel);
+        bg.setColor(bgColor);
         bg.setCornerRadius(28);
+        tv.setBackground(bg);
 
-        bubble.setBackground(bg);
-
-        LinearLayout.LayoutParams params =
-                new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                );
-
-        params.gravity = Gravity.LEFT;
-        params.setMargins(0, 8, 45, 8);
-
-        chatContainer.addView(bubble, params);
+        return tv;
     }
 }
