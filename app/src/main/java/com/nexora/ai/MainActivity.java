@@ -60,67 +60,58 @@ public class MainActivity extends Activity {
         });
 
         top.addView(menu);
-        top.addView(logo, lp);
+        top.addView(logo,lp);
         top.addView(newChat);
 
         root.addView(top);
     }
-}
 
     void createTools() {
         toolsContainer = new LinearLayout(this);
         toolsContainer.setOrientation(LinearLayout.VERTICAL);
         toolsContainer.setPadding(18,0,18,12);
 
-        TextView title = text("⚡ AI Studio",16,soft);
-        toolsContainer.addView(title);
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
 
-        LinearLayout row1 = new LinearLayout(this);
-        row1.setOrientation(LinearLayout.HORIZONTAL);
-        row1.addView(toolCard("🎬","Video"));
-        row1.addView(toolCard("🖼️","Image"));
+        row.addView(toolCard("🎬","Video"));
+        row.addView(toolCard("🖼️","Image"));
+        row.addView(toolCard("🎨","Thumbnail"));
 
-        LinearLayout row2 = new LinearLayout(this);
-        row2.setOrientation(LinearLayout.HORIZONTAL);
-        row2.addView(toolCard("🎤","Voice"));
-        row2.addView(toolCard("🎨","Thumbnail"));
-
-        toolsContainer.addView(row1);
-        toolsContainer.addView(row2);
-
+        toolsContainer.addView(row);
         root.addView(toolsContainer);
     }
 
-    TextView toolCard(String emoji, String name) {
+    TextView toolCard(String emoji,String name){
         TextView card = new TextView(this);
         card.setText(emoji + "\n" + name);
         card.setGravity(Gravity.CENTER);
         card.setTextColor(white);
-        card.setPadding(20,24,20,24);
+        card.setPadding(18,18,18,18);
 
         GradientDrawable bg = new GradientDrawable();
-        bg.setCornerRadius(28);
+        bg.setCornerRadius(24);
         bg.setColor(panel);
         card.setBackground(bg);
 
         LinearLayout.LayoutParams lp =
                 new LinearLayout.LayoutParams(0,-2,1);
-        lp.setMargins(6,8,6,8);
+        lp.setMargins(6,6,6,6);
         card.setLayoutParams(lp);
 
         card.setOnClickListener(v ->
-            addBotMessage("🚀 " + name + " module will be added soon!")
+            addBotMessage("🚀 " + name + " feature is coming soon!")
         );
 
         return card;
     }
 
-    void createChatArea() {
+    void createChatArea(){
         scrollView = new ScrollView(this);
 
         chatContainer = new LinearLayout(this);
         chatContainer.setOrientation(LinearLayout.VERTICAL);
-        chatContainer.setPadding(16,18,16,18);
+        chatContainer.setPadding(16,16,16,16);
 
         scrollView.addView(chatContainer);
 
@@ -128,19 +119,15 @@ public class MainActivity extends Activity {
                 new LinearLayout.LayoutParams(-1,0,1));
     }
 
-    void createInputBar() {
-
+    void createInputBar(){
         LinearLayout inputBar = new LinearLayout(this);
         inputBar.setOrientation(LinearLayout.HORIZONTAL);
-        inputBar.setGravity(Gravity.CENTER_VERTICAL);
-        inputBar.setPadding(16,14,16,18);
+        inputBar.setPadding(16,16,16,16);
 
         GradientDrawable bg = new GradientDrawable();
         bg.setCornerRadius(40);
         bg.setColor(panel);
         inputBar.setBackground(bg);
-
-        TextView plus = text("＋",26,white);
 
         input = new EditText(this);
         input.setHint("Message Nexora...");
@@ -148,19 +135,13 @@ public class MainActivity extends Activity {
         input.setTextColor(white);
         input.setBackgroundColor(Color.TRANSPARENT);
 
-        LinearLayout.LayoutParams inputLp =
+        LinearLayout.LayoutParams lp =
                 new LinearLayout.LayoutParams(0,-2,1);
 
         TextView send = text("➤",24,white);
-
-        GradientDrawable sendBg = new GradientDrawable();
-        sendBg.setShape(GradientDrawable.OVAL);
-        sendBg.setColor(purple);
-        send.setBackground(sendBg);
-        send.setPadding(20,18,20,18);
+        send.setPadding(20,16,20,16);
 
         send.setOnClickListener(v -> {
-
             String msg = input.getText().toString().trim();
             if(msg.isEmpty()) return;
 
@@ -174,48 +155,36 @@ public class MainActivity extends Activity {
             );
         });
 
-        inputBar.addView(plus);
-        inputBar.addView(input,inputLp);
+        inputBar.addView(input,lp);
         inputBar.addView(send);
 
         root.addView(inputBar);
     }
 
-    String getReply(String msg) {
+    String getReply(String msg){
         String m = msg.toLowerCase();
 
-        if (m.contains("hello") || m.contains("hi")) {
+        if(m.contains("hello") || m.contains("hi"))
             return "👋 Hello! I'm Nexora AI.";
-        }
-        if (m.contains("thumbnail")) {
-            return "🎨 Thumbnail Maker is coming to Nexora.";
-        }
-        if (m.contains("image")) {
-            return "🖼️ AI Image Generator will be added next.";
-        }
-        if (m.contains("video")) {
-            return "🎬 AI Video Generator is under development.";
-        }
 
-        return "💜 Nexora received: " + msg;
+        if(m.contains("thumbnail"))
+            return "🎨 Thumbnail Maker is coming to Nexora.";
+
+        if(m.contains("image"))
+            return "🖼️ AI Image Generator will be added next.";
+
+        if(m.contains("video"))
+            return "🎬 AI Video Generator is under development.";
+
+        return "💜 Nexora: " + msg;
     }
 
     void addUserMessage(String msg){
-        TextView tv = bubble(msg,purple,white);
-        LinearLayout.LayoutParams lp =
-                new LinearLayout.LayoutParams(-2,-2);
-        lp.gravity = Gravity.END;
-        lp.setMargins(70,10,0,10);
-        chatContainer.addView(tv,lp);
+        chatContainer.addView(bubble(msg,purple,white));
     }
 
     void addBotMessage(String msg){
-        TextView tv = bubble(msg,panel,soft);
-        LinearLayout.LayoutParams lp =
-                new LinearLayout.LayoutParams(-2,-2);
-        lp.gravity = Gravity.START;
-        lp.setMargins(0,10,70,10);
-        chatContainer.addView(tv,lp);
+        chatContainer.addView(bubble(msg,panel,soft));
     }
 
     TextView bubble(String text,int bgColor,int txtColor){
@@ -223,12 +192,17 @@ public class MainActivity extends Activity {
         tv.setText(text);
         tv.setTextColor(txtColor);
         tv.setTextSize(16);
-        tv.setPadding(24,16,24,16);
+        tv.setPadding(22,16,22,16);
 
         GradientDrawable bg = new GradientDrawable();
-        bg.setCornerRadius(28);
+        bg.setCornerRadius(24);
         bg.setColor(bgColor);
         tv.setBackground(bg);
+
+        LinearLayout.LayoutParams lp =
+                new LinearLayout.LayoutParams(-2,-2);
+        lp.setMargins(0,8,0,8);
+        tv.setLayoutParams(lp);
 
         return tv;
     }
