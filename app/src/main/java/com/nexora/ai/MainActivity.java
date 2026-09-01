@@ -36,7 +36,7 @@ public class MainActivity extends Activity {
 
         setContentView(root);
 
-        addBotMessage("👋 Welcome to Nexora AI!\nAsk anything or use AI Studio below.");
+        addBotMessage("👋 Welcome to Nexora AI!\nAsk anything or tap an AI Studio tool.");
     }
 
     void createTopBar() {
@@ -57,8 +57,7 @@ public class MainActivity extends Activity {
         toolsContainer.setOrientation(LinearLayout.VERTICAL);
         toolsContainer.setPadding(16,0,16,12);
 
-        TextView title = text("⚡ AI Studio",16,soft);
-        toolsContainer.addView(title);
+        toolsContainer.addView(text("⚡ AI Studio",16,soft));
 
         LinearLayout row1 = new LinearLayout(this);
         row1.setOrientation(LinearLayout.HORIZONTAL);
@@ -76,9 +75,9 @@ public class MainActivity extends Activity {
         root.addView(toolsContainer);
     }
 
-    TextView toolCard(String emoji, String name) {
+    TextView toolCard(String emoji,String name){
         TextView card = new TextView(this);
-        card.setText(emoji + "\n" + name);
+        card.setText(emoji+"\n"+name);
         card.setGravity(Gravity.CENTER);
         card.setTextColor(white);
         card.setPadding(20,24,20,24);
@@ -99,18 +98,24 @@ public class MainActivity extends Activity {
     }
 
     String getToolReply(String name){
-        switch (name){
-            case "Image":
-                return "🖼️ Nexora Image Generator\n\nDescribe any image you want.";
-            case "Video":
-                return "🎬 Nexora Video Generator\n\nDescribe your video idea.";
-            case "Thumbnail":
-                return "🎨 Nexora Thumbnail Maker\n\nSend your YouTube title.";
-            case "Voice":
-                return "🎤 Nexora Voice Generator\n\nType text for voice generation.";
-            default:
-                return "💜 " + name + " module opened.";
+
+        if(name.equals("Image")){
+            return "🖼️ Image Generator\n\nFuture models: Nano Banana Pro, Flux, SDXL.";
         }
+
+        if(name.equals("Video")){
+            return "🎬 Video Generator\n\nFuture models: Sora, Veo 3, Kling, Runway.";
+        }
+
+        if(name.equals("Thumbnail")){
+            return "🎨 Thumbnail Maker\n\nPaste your YouTube title and Nexora will generate a thumbnail prompt.";
+        }
+
+        if(name.equals("Voice")){
+            return "🎤 Voice Generator\n\nPaste your script for AI voice generation.";
+        }
+
+        return "💜 Nexora AI Studio";
     }
 
     void createChatArea() {
@@ -122,8 +127,7 @@ public class MainActivity extends Activity {
 
         scrollView.addView(chatContainer);
 
-        root.addView(scrollView,
-                new LinearLayout.LayoutParams(-1,0,1));
+        root.addView(scrollView,new LinearLayout.LayoutParams(-1,0,1));
     }
 
     void createInputBar() {
@@ -160,10 +164,9 @@ public class MainActivity extends Activity {
             addUserMessage(msg);
             input.setText("");
 
-            addBotMessage("💜 Nexora: " + msg);
+            addBotMessage("💜 Nexora\n\n" + msg);
 
-            scrollView.post(() ->
-                scrollView.fullScroll(View.FOCUS_DOWN));
+            scrollView.post(() -> scrollView.fullScroll(View.FOCUS_DOWN));
         });
 
         inputBar.addView(input,inputLp);
@@ -200,8 +203,8 @@ public class MainActivity extends Activity {
         GradientDrawable bg = new GradientDrawable();
         bg.setCornerRadius(28);
         bg.setColor(bgColor);
-        tv.setBackground(bg);
 
+        tv.setBackground(bg);
         return tv;
     }
 
