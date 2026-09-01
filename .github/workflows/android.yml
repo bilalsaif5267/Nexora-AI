@@ -21,6 +21,10 @@ jobs:
       - name: Grant execute permission
         run: chmod +x gradlew
 
+      - name: Inject Gemini API key
+        run: |
+          sed -i "s#YAHAN_APNI_API_KEY_DALO#${{ secrets.GEMINI_API_KEY }}#" app/src/main/assets/index.html
+
       - name: Build APK
         run: |
           ./gradlew clean
