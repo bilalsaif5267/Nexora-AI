@@ -131,8 +131,8 @@ public class MainActivity extends Activity {
 
         root.addView(scrollView,
                 new LinearLayout.LayoutParams(-1,0,1));
-
-            void createInputBar() {
+    }
+        void createInputBar() {
 
         LinearLayout inputBar = new LinearLayout(this);
         inputBar.setOrientation(LinearLayout.HORIZONTAL);
@@ -238,4 +238,4 @@ public class MainActivity extends Activity {
         return t;
     }
 }
-    }
+    
