@@ -36,82 +36,89 @@ public class MainActivity extends Activity {
 
         setContentView(root);
 
-        addBotMessage("👋 Welcome to Nexora AI.\nYour creative AI studio is ready.");
+        addBotMessage("👋 Welcome to Nexora AI!\nAsk anything or use AI Studio below.");
     }
 
     void createTopBar() {
         LinearLayout top = new LinearLayout(this);
         top.setOrientation(LinearLayout.HORIZONTAL);
         top.setGravity(Gravity.CENTER_VERTICAL);
-        top.setPadding(22,20,22,18);
+        top.setPadding(20,20,20,20);
 
-        TextView menu = text("☰",26,white);
-        TextView logo = text("💜 NEXORA",20,white);
+        TextView logo = text("💜 NEXORA",22,white);
         logo.setTypeface(Typeface.DEFAULT_BOLD);
 
-        LinearLayout.LayoutParams lp =
-                new LinearLayout.LayoutParams(0,-2,1);
-
-        TextView newChat = text("＋",28,white);
-
-        newChat.setOnClickListener(v -> {
-            chatContainer.removeAllViews();
-            addBotMessage("✨ New chat started.");
-        });
-
-        top.addView(menu);
-        top.addView(logo,lp);
-        top.addView(newChat);
-
+        top.addView(logo);
         root.addView(top);
     }
 
     void createTools() {
         toolsContainer = new LinearLayout(this);
         toolsContainer.setOrientation(LinearLayout.VERTICAL);
-        toolsContainer.setPadding(18,0,18,12);
+        toolsContainer.setPadding(16,0,16,12);
 
-        LinearLayout row = new LinearLayout(this);
-        row.setOrientation(LinearLayout.HORIZONTAL);
+        TextView title = text("⚡ AI Studio",16,soft);
+        toolsContainer.addView(title);
 
-        row.addView(toolCard("🎬","Video"));
-        row.addView(toolCard("🖼️","Image"));
-        row.addView(toolCard("🎨","Thumbnail"));
+        LinearLayout row1 = new LinearLayout(this);
+        row1.setOrientation(LinearLayout.HORIZONTAL);
+        row1.addView(toolCard("🎬","Video"));
+        row1.addView(toolCard("🖼️","Image"));
 
-        toolsContainer.addView(row);
+        LinearLayout row2 = new LinearLayout(this);
+        row2.setOrientation(LinearLayout.HORIZONTAL);
+        row2.addView(toolCard("🎤","Voice"));
+        row2.addView(toolCard("🎨","Thumbnail"));
+
+        toolsContainer.addView(row1);
+        toolsContainer.addView(row2);
+
         root.addView(toolsContainer);
     }
 
-    TextView toolCard(String emoji,String name){
+    TextView toolCard(String emoji, String name) {
         TextView card = new TextView(this);
         card.setText(emoji + "\n" + name);
         card.setGravity(Gravity.CENTER);
         card.setTextColor(white);
-        card.setPadding(18,18,18,18);
+        card.setPadding(20,24,20,24);
 
         GradientDrawable bg = new GradientDrawable();
-        bg.setCornerRadius(24);
+        bg.setCornerRadius(28);
         bg.setColor(panel);
         card.setBackground(bg);
 
         LinearLayout.LayoutParams lp =
                 new LinearLayout.LayoutParams(0,-2,1);
-        lp.setMargins(6,6,6,6);
+        lp.setMargins(6,8,6,8);
         card.setLayoutParams(lp);
 
-        card.setOnClickListener(v ->
-            addBotMessage("🚀 " + name + " feature is coming soon!")
-        );
+        card.setOnClickListener(v -> addBotMessage(getToolReply(name)));
 
         return card;
     }
 
-    void createChatArea(){
+    String getToolReply(String name){
+        switch (name){
+            case "Image":
+                return "🖼️ Nexora Image Generator\n\nDescribe any image you want.";
+            case "Video":
+                return "🎬 Nexora Video Generator\n\nDescribe your video idea.";
+            case "Thumbnail":
+                return "🎨 Nexora Thumbnail Maker\n\nSend your YouTube title.";
+            case "Voice":
+                return "🎤 Nexora Voice Generator\n\nType text for voice generation.";
+            default:
+                return "💜 " + name + " module opened.";
+        }
+    }
+
+    void createChatArea() {
         scrollView = new ScrollView(this);
 
         chatContainer = new LinearLayout(this);
         chatContainer.setOrientation(LinearLayout.VERTICAL);
-        chatContainer.setPadding(16,16,16,16);
+        chatContainer.setPadding(16,18,16,18);
 
         scrollView.addView(chatContainer);
 
@@ -119,7 +126,7 @@ public class MainActivity extends Activity {
                 new LinearLayout.LayoutParams(-1,0,1));
     }
 
-    void createInputBar(){
+    void createInputBar() {
         LinearLayout inputBar = new LinearLayout(this);
         inputBar.setOrientation(LinearLayout.HORIZONTAL);
         inputBar.setPadding(16,16,16,16);
@@ -135,11 +142,16 @@ public class MainActivity extends Activity {
         input.setTextColor(white);
         input.setBackgroundColor(Color.TRANSPARENT);
 
-        LinearLayout.LayoutParams lp =
+        LinearLayout.LayoutParams inputLp =
                 new LinearLayout.LayoutParams(0,-2,1);
 
         TextView send = text("➤",24,white);
         send.setPadding(20,16,20,16);
+
+        GradientDrawable sendBg = new GradientDrawable();
+        sendBg.setShape(GradientDrawable.OVAL);
+        sendBg.setColor(purple);
+        send.setBackground(sendBg);
 
         send.setOnClickListener(v -> {
             String msg = input.getText().toString().trim();
@@ -148,43 +160,34 @@ public class MainActivity extends Activity {
             addUserMessage(msg);
             input.setText("");
 
-            addBotMessage(getReply(msg));
+            addBotMessage("💜 Nexora: " + msg);
 
             scrollView.post(() ->
-                scrollView.fullScroll(View.FOCUS_DOWN)
-            );
+                scrollView.fullScroll(View.FOCUS_DOWN));
         });
 
-        inputBar.addView(input,lp);
+        inputBar.addView(input,inputLp);
         inputBar.addView(send);
 
         root.addView(inputBar);
     }
 
-    String getReply(String msg){
-        String m = msg.toLowerCase();
-
-        if(m.contains("hello") || m.contains("hi"))
-            return "👋 Hello! I'm Nexora AI.";
-
-        if(m.contains("thumbnail"))
-            return "🎨 Thumbnail Maker is coming to Nexora.";
-
-        if(m.contains("image"))
-            return "🖼️ AI Image Generator will be added next.";
-
-        if(m.contains("video"))
-            return "🎬 AI Video Generator is under development.";
-
-        return "💜 Nexora: " + msg;
-    }
-
     void addUserMessage(String msg){
-        chatContainer.addView(bubble(msg,purple,white));
+        TextView tv = bubble(msg,purple,white);
+        LinearLayout.LayoutParams lp =
+                new LinearLayout.LayoutParams(-2,-2);
+        lp.gravity = Gravity.END;
+        lp.setMargins(70,10,0,10);
+        chatContainer.addView(tv,lp);
     }
 
     void addBotMessage(String msg){
-        chatContainer.addView(bubble(msg,panel,soft));
+        TextView tv = bubble(msg,panel,soft);
+        LinearLayout.LayoutParams lp =
+                new LinearLayout.LayoutParams(-2,-2);
+        lp.gravity = Gravity.START;
+        lp.setMargins(0,10,70,10);
+        chatContainer.addView(tv,lp);
     }
 
     TextView bubble(String text,int bgColor,int txtColor){
@@ -192,17 +195,12 @@ public class MainActivity extends Activity {
         tv.setText(text);
         tv.setTextColor(txtColor);
         tv.setTextSize(16);
-        tv.setPadding(22,16,22,16);
+        tv.setPadding(24,16,24,16);
 
         GradientDrawable bg = new GradientDrawable();
-        bg.setCornerRadius(24);
+        bg.setCornerRadius(28);
         bg.setColor(bgColor);
         tv.setBackground(bg);
-
-        LinearLayout.LayoutParams lp =
-                new LinearLayout.LayoutParams(-2,-2);
-        lp.setMargins(0,8,0,8);
-        tv.setLayoutParams(lp);
 
         return tv;
     }
