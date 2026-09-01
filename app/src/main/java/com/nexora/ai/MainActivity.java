@@ -66,6 +66,7 @@ public class MainActivity extends Activity {
         root.addView(top);
     }
 }
+
     void createTools() {
         toolsContainer = new LinearLayout(this);
         toolsContainer.setOrientation(LinearLayout.VERTICAL);
@@ -126,6 +127,7 @@ public class MainActivity extends Activity {
         root.addView(scrollView,
                 new LinearLayout.LayoutParams(-1,0,1));
     }
+
     void createInputBar() {
 
         LinearLayout inputBar = new LinearLayout(this);
