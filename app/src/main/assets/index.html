@@ -8,7 +8,7 @@
   body { margin:0; font-family: sans-serif; background:#0f0f14; color:#eee; display:flex; flex-direction:column; height:100vh; }
   #header { padding:14px; background:#1a1a22; font-size:18px; font-weight:bold; text-align:center; }
   #messages { flex:1; overflow-y:auto; padding:12px; }
-  .msg { max-width:80%; margin:6px 0; padding:10px 14px; border-radius:14px; line-height:1.4; }
+  .msg { max-width:80%; margin:6px 0; padding:10px 14px; border-radius:14px; line-height:1.4; word-wrap:break-word; }
   .user { background:#3b82f6; color:white; margin-left:auto; }
   .bot { background:#242430; color:#eee; margin-right:auto; }
   #inputBar { display:flex; padding:10px; background:#1a1a22; }
@@ -62,11 +62,17 @@ async function sendMessage() {
     );
     const data = await res.json();
     messagesDiv.removeChild(messagesDiv.lastChild);
-    const reply = (data.candidates && data.candidates[0].content.parts[0].text) || "Jawab nahi mila, dubara koshish karo.";
-    addMessage(reply, "bot");
+
+    if (data.error) {
+      addMessage("API ERROR: " + data.error.message, "bot");
+    } else if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+      addMessage(data.candidates[0].content.parts[0].text, "bot");
+    } else {
+      addMessage("Unexpected response: " + JSON.stringify(data), "bot");
+    }
   } catch (e) {
     messagesDiv.removeChild(messagesDiv.lastChild);
-    addMessage("Error: internet ya API key check karo.", "bot");
+    addMessage("Network error: " + e.message, "bot");
   }
 }
 
